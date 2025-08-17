@@ -17,8 +17,8 @@ impl Db{
         let id=Uuid::new_v4();
         let u=User{
         id:id.to_string(),
-        username:username,
-        password:password,
+        username,
+        password,
         };
 
         diesel::insert_into(crate::schema::user::table)

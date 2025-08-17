@@ -10,9 +10,9 @@ use crate::db::Db;
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Website{
     pub id:String,
-    url:String,
-    user_id:String,
-    time_added:chrono::NaiveDateTime,
+    pub url:String,
+    pub user_id:String,
+    pub time_added:chrono::NaiveDateTime,
 }
 
 

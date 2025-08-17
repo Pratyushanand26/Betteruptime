@@ -7,7 +7,7 @@ pub struct Db{
 }
 
 impl Db {
-    pub fn default() -> Result<Self, ConnectionError> {
+    pub fn new() -> Result<Self, ConnectionError> {
         let config=Config::default();
         // 2. Try to establish a Postgres connection
         let conn = PgConnection::establish(&config.db_url)?;
