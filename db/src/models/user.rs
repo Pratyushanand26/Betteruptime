@@ -1,6 +1,5 @@
-use std::string;
-use diesel::{dsl::Values, prelude::*, query_dsl::methods::FilterDsl};
-use uuid::Uuid;
+use diesel::prelude::*;
+use diesel::ExpressionMethods; use uuid::Uuid;
 use crate::db::Db;
 
 
@@ -30,15 +29,15 @@ impl Db{
         Ok(id.to_string())
     }
 
-   pub fn sign_in(&mut self,input_username:String,input_passwprd:String)->Result<bool,diesel::result::Error>{
-    use crate::schema::user::dsl::{user as users_table, username, password};
+   pub fn sign_in(&mut self,input_username:String,input_password:String)->Result<bool,diesel::result::Error>{
+    use crate::schema::user::dsl::*;
 
-    let user_result=users_table
-               .filter(username.eq(input_username))
+    let user_result=user
+               .or_filter(username.eq(input_username))
                .select(User::as_select())
-               .first(& self.conn)?;
+               .first(&mut self.conn)?;
     
-    if password!=user_result.password{
+    if user_result.password!=input_password{
         return Ok(false);
     }
     Ok(true)

@@ -3,10 +3,10 @@ pub mod request_input;
 pub mod request_output;
 
 use poem::{
-    get, handler, listener::TcpListener, middleware::Tracing, post, web::{Json, Path}, EndpointExt, Route, Server
+    get, handler, http::response, listener::TcpListener, middleware::Tracing, post, web::{Json, Path}, EndpointExt, Route, Server
 };
 use crate::{request_input::CreateWebsiteInput, request_output::CreateWebsiteOutput};
-use db::Db;
+use db::db::Db;
 
 #[handler]
 fn get_website(Path(website_id): Path<String>)->Json<String>   {
@@ -16,13 +16,10 @@ fn get_website(Path(website_id): Path<String>)->Json<String>   {
 #[handler]
 fn create_website(Json(data):Json<CreateWebsiteInput>)-> Json<CreateWebsiteOutput> {
    let url=data.url;
+   let mut s=Db::default().unwrap();
+   let website=s.create_website(String::from("!"), url).unwrap();
 
-   let d=Db{};
-   let id=d.create_user();
-
-   let response=CreateWebsiteOutput{
-    id:id
-   };
+   let response=CreateWebsiteOutput { id: website.id };
    Json(response)
 }
 

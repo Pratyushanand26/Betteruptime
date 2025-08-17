@@ -1,5 +1,7 @@
 use std::env::{self, VarError};
 
+use dotenvy::dotenv;
+
 
 
 pub struct Config{
@@ -8,6 +10,7 @@ pub struct Config{
 
 impl Default for Config{
    fn default() -> Self {
+    dotenv().ok();
        let db_url=env::var("DATABASE_URL")
        .unwrap_or_else(|_| panic!("please provide the database url in env file"));
 
