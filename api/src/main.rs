@@ -1,35 +1,19 @@
-
+pub mod routes;
 pub mod request_input;
 pub mod request_output;
 
+use std::sync::{Arc, Mutex};
 use poem::{
-    get, handler, listener::TcpListener, post, web::{Json, Path}, Route, Server
+    get, handler, EndpointExt,listener::TcpListener, post, web::{Data, Json, Path}, Route, Server
 };
-use crate::{request_input::{CreateUserInput, CreateWebsiteInput}, request_output::{CreateUserOutput, CreateWebsiteOutput, GetWebsiteOutput, SigninOutput}};
+use crate::{request_input::{CreateUserInput, CreateWebsiteInput}, request_output::{CreateUserOutput, CreateWebsiteOutput, GetWebsiteOutput, SigninOutput}, routes::website::{create_website, get_website}};
 use db::db::Db;
 
-#[handler]
-fn get_website(Path(website_id): Path<String>)->Json<GetWebsiteOutput>{
-    let mut s=Db::new().unwrap();
-    let website=s.get_website(website_id).unwrap();
-    let response=GetWebsiteOutput { url: website.url };
-    Json(response)
-}
 
 #[handler]
-fn create_website(Json(data):Json<CreateWebsiteInput>)-> Json<CreateWebsiteOutput> {
-   let url=data.url;
-   let mut s=Db::new().unwrap();
-   let website=s.create_website(String::from("!"), url).unwrap();
-
-   let response=CreateWebsiteOutput { id: website.id };
-   Json(response)
-}
-
-#[handler]
-fn signup(Json(data):Json<CreateUserInput>)->Json<CreateUserOutput>{
-    let mut s=Db::new().unwrap();
-    let id=s.sign_up(data.username, data.password).unwrap();
+fn signup(Json(data):Json<CreateUserInput>,Data(s):Data<&Arc<Mutex<Db>>>)->Json<CreateUserOutput>{
+    let mut locked_s=s.lock().unwrap();
+    let id=locked_s.sign_up(data.username, data.password).unwrap();
 
     let response=CreateUserOutput{
      id
@@ -38,9 +22,9 @@ fn signup(Json(data):Json<CreateUserInput>)->Json<CreateUserOutput>{
 }
 
 #[handler]
-fn signin(Json(data):Json<CreateUserInput>)->Json<SigninOutput>{
-    let mut s=Db::new().unwrap();
-    let _exists=s.sign_in(data.username, data.password).unwrap();
+fn signin(Json(data):Json<CreateUserInput>,Data(s):Data<&Arc<Mutex<Db>>>)->Json<SigninOutput>{
+    let mut locked_s=s.lock().unwrap();
+    let _exists=locked_s.sign_in(data.username, data.password).unwrap();
 
     let response=SigninOutput{
      jwt:String::from("pratyush")
@@ -51,11 +35,13 @@ fn signin(Json(data):Json<CreateUserInput>)->Json<SigninOutput>{
 #[tokio::main]
 async fn main() -> Result<(), std::io::Error> {
 
+    let mut s=Arc::new(Mutex::new(Db::new().unwrap()));
     let app = Route::new()
         .at("/website/:website_id", get(get_website))
         .at("/website",post(create_website))
         .at("/user/signin",post(signin))
-        .at("/user/signup",post(signup));
+        .at("/user/signup",post(signup))
+        .data(s);
 
     Server::new(TcpListener::bind("0.0.0.0:3003"))
         .name("hello-world")
