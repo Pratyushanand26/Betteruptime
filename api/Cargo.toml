@@ -9,3 +9,4 @@ serde = {version="1.0.219",features=["derive"]}
 tokio = {version="1.46.0",features=["full"]}
 db={path="../db"}
 dotenvy = "0.15.7"
+jsonwebtoken = "9"
