@@ -3,9 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useState } from "react";
 import heroImage from "@/assets/hero-dark.jpg";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const Index = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const router=useRouter()
 
   const features = [
     {
@@ -143,8 +146,12 @@ const Index = () => {
               <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">Features</a>
               <a href="#pricing" className="text-muted-foreground hover:text-foreground transition-colors">Pricing</a>
               <a href="#contact" className="text-muted-foreground hover:text-foreground transition-colors">Contact</a>
-              <Button variant="ghost" size="sm">Sign In</Button>
-              <Button variant="hero" size="sm">Start Free Trial</Button>
+              <Button onClick={()=>{
+                    router.push("/signin")
+                  }} variant="ghost" size="sm">Sign In</Button>
+              <Button onClick={()=>{
+                    router.push("/signup")
+                  }}  size="sm">Start Free Trial</Button>
             </div>
 
             <button 
@@ -165,8 +172,12 @@ const Index = () => {
             <a href="#pricing" onClick={() => setIsMenuOpen(false)}>Pricing</a>
             <a href="#contact" onClick={() => setIsMenuOpen(false)}>Contact</a>
             <div className="flex flex-col gap-4 mt-8">
-              <Button variant="ghost">Sign In</Button>
-              <Button variant="hero">Start Free Trial</Button>
+              <Button onClick={()=>{
+                    router.push("/signin")
+                  }} variant="ghost">Sign In</Button>
+              <Button onClick={()=>{
+                    router.push("/signup")
+                  }}>Start Free Trial</Button>
             </div>
           </div>
         </div>
@@ -195,7 +206,9 @@ const Index = () => {
               </div>
               
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button variant="hero" size="lg" className="group text-lg px-8 py-4 h-auto">
+                <Button onClick={()=>{
+                    router.push("/signup")
+                  }} size="lg" className="group text-lg px-8 py-4 h-auto">
                   Start Free Trial
                   <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
                 </Button>
@@ -223,7 +236,7 @@ const Index = () => {
 
             <div className="relative lg:pl-8">
               <div className="relative rounded-3xl overflow-hidden shadow-glass animate-float">
-                <img 
+                <Image 
                   src={heroImage} 
                   alt="Advanced uptime monitoring dashboard"
                   className="w-full h-auto"
@@ -379,8 +392,9 @@ const Index = () => {
                     ))}
                   </ul>
 
-                  <Button 
-                    variant={plan.popular ? "hero" : "outline"} 
+                  <Button onClick={()=>{
+                    router.push("/signup")
+                  }}
                     size="lg" 
                     className="w-full text-lg py-4 h-auto"
                   >
@@ -414,7 +428,9 @@ const Index = () => {
               Get started in under 30 seconds.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button variant="hero" size="lg" className="text-lg px-12 py-4 h-auto">
+              <Button onClick={()=>{
+                    router.push("/signup")
+                  }} size="lg" className="text-lg px-12 py-4 h-auto">
                 Start Free Trial
               </Button>
               <Button variant="outline" size="lg" className="text-lg px-12 py-4 h-auto border-glass bg-glass backdrop-blur-glass">
