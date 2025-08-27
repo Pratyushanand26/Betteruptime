@@ -22,3 +22,13 @@ pub fn create_website(Json(data):Json<CreateWebsiteInput>,Data(s):Data<&Arc<Mute
    let response=CreateWebsiteOutput { id: website.id };
    Json(response)
 }
+
+#[handler]
+pub fn get_websites(Json(data):Json<CreateWebsiteInput>,Data(s):Data<&Arc<Mutex<Db>>>,UserId(user_id):UserId)-> Json<CreateWebsiteOutput> {
+   let url=data.url;
+   let mut locked_s=s.lock().unwrap();
+   let website=locked_s.create_website(user_id,url).unwrap();
+
+   let response=CreateWebsiteOutput { id: website.id };
+   Json(response)
+}

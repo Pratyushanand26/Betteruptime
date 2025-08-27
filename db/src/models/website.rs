@@ -44,4 +44,15 @@ impl Db{
    
    Ok(website_result)
    }
+
+   pub fn get_websites(&mut self,input_user_id:String,input_id:String)->Result<Website,diesel::result::Error>{
+    use crate::schema::website::dsl::*;
+
+    let website_result=website
+        .filter(user_id.eq(input_user_id))
+        .select(Website::as_select())
+        .first(&mut self.conn)?;
+   
+   Ok(website_result)
+   }
 }
