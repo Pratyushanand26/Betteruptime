@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import axios from "axios"
+import { BACKEND_URL } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
 
 interface SignInProps {
   onToggle: () => void;
@@ -19,9 +22,16 @@ const SignIn: React.FC<SignInProps> = ({ onToggle }) => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async(e: React.FormEvent) => {
+    const router=useRouter()
     e.preventDefault();
     console.log('Sign in attempted with:', formData);
+    let respose=await axios.post(`${BACKEND_URL}/user/signin`,{
+        username:formData.email,
+        password:formData.password
+    })
+    localStorage.setItem("token",respose?.data?.jwt)
+    router.push("/dashboard")
   };
 
   return (

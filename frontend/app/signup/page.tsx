@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { Mail, Lock, Eye, EyeOff, User } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { BACKEND_URL } from '@/lib/utils';
+import axios from 'axios';
 
 interface SignUpProps {
   onToggle: () => void;
@@ -22,13 +25,22 @@ const SignUp: React.FC<SignUpProps> = ({ onToggle }) => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
       alert('Passwords do not match!');
       return;
     }
     console.log('Sign up attempted with:', formData);
+    const router=useRouter()
+    e.preventDefault();
+    console.log('Sign in attempted with:', formData);
+    let respose=await axios.post(`${BACKEND_URL}/user/signup`,{
+        username:formData.email,
+        password:formData.password
+    })
+    localStorage.setItem("token",respose?.data?.jwt)
+    router.push("/dashboard")
   };
 
   return (
