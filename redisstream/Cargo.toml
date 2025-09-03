@@ -1,0 +1,9 @@
+[package]
+name = "redisstream"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+redis = { version = "0.25", features = ["tokio-comp"] }
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
